@@ -8,6 +8,7 @@ port = 8000
 country = "_"
 
 def get_country_from_barcode(code):
+    print("Connection Established with Barcode: " + str(code))
     initials = int(code[:3])
     if initials <= 39 and initials >= 30:
         return "USA"
