@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MISSION CANADA 🇨🇦 - Support Canadian Products</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.rawgit.com/serratus/quaggaJS/0420d5e0/dist/quagga.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .background {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(45deg, #ff0000, #ffffff, #ff0000);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            z-index: -2;
+        }
+
+        .leaf {
+            position: absolute;
+            font-size: 24px;
+            color: #ff0000;
+            animation: fall linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes fall {
+            to { transform: translateY(100vh) rotate(360deg); }
+        }
+
+        .container {
+            padding: 2rem;
+            text-align: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .scanner-section {
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
+            max-width: 600px;
+        }
+
+        #scan-button {
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            background: #ff0000;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        #scan-button:hover {
+            transform: scale(1.1);
+        }
+
+        .result {
+            margin-top: 2rem;
+            padding: 1rem;
+            border-radius: 10px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .canada-flag {
+            font-size: 3rem;
+            margin: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    <div class="container">
+        <h1>MISSION CANADA 🇨🇦</h1>
+        <p>Scan product barcodes to support Canadian economy!</p>
+        
+        <div class="scanner-section">
+            <button id="scan-button">SCAN PRODUCT</button>
+            <div id="result"></div>
+        </div>
+
+        <div class="stats">
+            <h2>Why Choose Canadian?</h2>
+            <p>🇨🇦 Support Local Economy | 🍁 Higher Quality Standards | ❤️ Ethical Production</p>
+        </div>
+    </div>
+
+    <script>
+        // Create falling leaves
+        function createLeaves() {
+            const numLeaves = 30;
+            for (let i = 0; i < numLeaves; i++) {
+                const leaf = document.createElement('div');
+                leaf.className = 'leaf';
+                leaf.innerHTML = '🍁';
+                leaf.style.left = Math.random() * 100 + 'vw';
+                leaf.style.animationDuration = Math.random() * 3 + 2 + 's';
+                document.body.appendChild(leaf);
+            }
+        }
+        createLeaves();
+
+        // Barcode scanning
+        document.getElementById('scan-button').addEventListener('click', () => {
+            Quagga.init({
+                inputStream: {
+                    name: "Live",
+                    type: "LiveStream",
+                    target: document.querySelector('#scan-button')
+                },
+                decoder: {
+                    readers: ["ean_reader"]
+                }
+            }, function(err) {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
+                Quagga.start();
+            });
+
+            Quagga.onDetected(async (result) => {
+                Quagga.stop();
+                const code = result.codeResult.code;
+                
+                // Simulated API call
+                const response = await fetch(`/api/product/${code}`);
+                const data = await response.json();
+                
+                displayResult(data);
+            });
+        });
+
+        function displayResult(data) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = 'result';
+            resultDiv.innerHTML = `
+                <h3>${data.productName}</h3>
+                <p>Origin: ${data.country}</p>
+                ${data.country === 'Canada' ? 
+                    '<div class="canada-flag">🇨🇦 Recommended Canadian Product!</div>' :
+                    '<div style="color: #ff0000">⚠️ Consider choosing a Canadian alternative</div>'}
+            `;
+        }
+
+        // Mock API response
+        window.fetch = async (url) => ({
+            json: () => ({
+                productName: 'Sample Product',
+                country: url.includes('04') ? 'Canada' : 'USA'
+            })
+        });
+    </script>
+</body>
+</html> 
+
+
+

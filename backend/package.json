@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "mongoose": "^8.10.0",
+    "quagga": "^0.12.1",
+    "three": "^0.173.0"
+  }
+}
