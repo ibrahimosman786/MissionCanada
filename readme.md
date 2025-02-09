@@ -1,5 +1,6 @@
-### Mission Canada
+# Mission Canada
 
+### About Us:
 Mission Camada is a project dedicated to promoting true Canadian products. With our fully functional website, users can simply scan a product's barcode and receive a verified status indicating whether the product is made in Canada.
 
 ### Features
