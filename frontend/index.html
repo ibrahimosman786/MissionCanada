@@ -139,15 +139,18 @@
                 Quagga.start();
             });
 
+
             Quagga.onDetected(async (result) => {
                 Quagga.stop();
                 const code = result.codeResult.code;
-                
-                // Simulated API call
-                const response = await fetch(`/api/product/${code}`);
-                const data = await response.json();
-                
-                displayResult(data);
+                let country;
+                const url = `http://localhost:8000/?barcode=${barcode}`;
+                fetch(url).then(res => {
+                    return res.json()
+                }).then(data => {
+                    country = data.country
+                    displayResult(country);
+                })
             });
         });
 
