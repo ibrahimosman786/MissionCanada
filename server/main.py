@@ -17,7 +17,7 @@ def get_country_from_barcode(code):
 
 class MyHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
-        
+        print("Connection...")
         parsed_url = urlparse(self.path)
         query_params = parse_qs(parsed_url.query)
 
